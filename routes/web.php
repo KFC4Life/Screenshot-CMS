@@ -12,5 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
+
+Auth::routes();
+
+Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
+Route::get('/screenshots/recent', 'ScreenshotsController@indexRecent')->name('screenshots.recent');
+Route::get('/screenshots/overview', 'ScreenshotsController@indexOverview')->name('screenshots.overview');
