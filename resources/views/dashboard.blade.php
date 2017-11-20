@@ -10,7 +10,7 @@
                 <p class="card-text">
                     A list of screenshots that are taken will show here.
                 </p>
-                @if(!$last_added_empty)
+                @if($last_added_empty == false)
                     <p class="card-text"><small class="text-muted">Last screenshot added {{ $last_added->DiffForHumans() }}</small></p>
                 @endif
                 <a href="{{ route('screenshots.recent') }}" class="btn btn-primary">View Screenshots</a>

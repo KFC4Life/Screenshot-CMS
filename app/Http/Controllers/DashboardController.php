@@ -31,7 +31,8 @@ class DashboardController extends Controller
         if(!$screenshots->isEmpty()) {
             $last_added_id = DB::table('screenshots')->latest()->first()->id;
             $last_added = Screenshot::find($last_added_id)->created_at;
-            return view('dashboard', compact('updated_at', 'last_added'));
+            $last_added_empty = false;
+            return view('dashboard', compact('updated_at', 'last_added', 'last_added_empty'));
         } else {
             $last_added_empty = true;
             return view('dashboard', compact('updated_at', 'last_added_empty'));
