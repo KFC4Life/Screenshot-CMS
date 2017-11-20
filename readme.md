@@ -6,15 +6,16 @@ Please take a look at our <a href="https://github.com/siemen6/Screenshot-CMS/wik
 
 ## Features
 - Import screenshots
-- Access log
 - Private upload key
-- Advanced settings
 - Bootstrap 4 Design
+- Simple setup command
 
 ## Upcoming features
 - Dark theme
 - Backup function
 - Statistics
+- System log
+- Advanced settings
 
 ## Screenshots
 ![Screenshot 1](https://i.siemenrotensen.nl/oTQXOXLXv)
