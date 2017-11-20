@@ -14,6 +14,7 @@
     <style>
         body {
             background: #AFDCEB;
+            margin: 0;
         }
 
         .camera {
@@ -253,9 +254,49 @@
             z-index: 10;
         }
 
+        .notice {
+            background: #0275d8;
+            color: #fff;
+            text-align: center;
+            display: block!important;
+            padding: 1rem 1rem!important;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            font-size: 16px;
+            text-decoration: none;
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .top-right {
+            position: absolute;
+            right: 10px;
+            top: 18px;
+        }
+
+        .links > a {
+            color: #636b6f;
+            padding: 0 25px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .1rem;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-family: 'Raleway', sans-serif;
+        }
     </style>
 </head>
 <body>
+@auth
+    <a href="{{ route('dashboard') }}" class="notice">
+        You're logged in, click here to return back to the dashboard.
+    </a>
+@endauth
+@guest
+<div class="top-right links">
+    <a href="{{ route('login') }}">Login</a>
+</div>
+@endguest
 <div class="camera">
     <div class="circle one"></div>
     <div class="circle two"></div>

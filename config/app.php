@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\DB;
 return [
 
     /*
@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => 'Screenshot CMS',
 
     /*
     |--------------------------------------------------------------------------
@@ -167,6 +167,8 @@ return [
         /*
          * Package Service Providers...
          */
+
+
 
         /*
          * Application Service Providers...
