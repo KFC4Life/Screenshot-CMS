@@ -26,7 +26,7 @@
 
                     @foreach($screenshots as $screenshot)
                         <div class="card">
-                            <img class="card-img-top" src="{{ url('/raw/'.$screenshot->name) }}"
+                            <img class="card-img-top" src="{{ url('/storage/screenshots/'.$screenshot->full_name) }}"
                                  alt="{{ $screenshot->name }}">
                             <div class="card-footer">
                                 <small class="text-muted">{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $screenshot->created_at)->DiffForHumans() }}</small>
