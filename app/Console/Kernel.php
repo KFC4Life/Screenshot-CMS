@@ -15,7 +15,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\import::class,
+        Commands\Import::class,
         Commands\Setup::class,
         Commands\SetupReset::class,
     ];

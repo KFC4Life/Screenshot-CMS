@@ -27,7 +27,7 @@
                     @foreach($screenshots as $screenshot)
                         <div class="card">
                             <img class="card-img-top" src="{{ url('/raw/'.$screenshot->name) }}"
-                                 alt="Card image cap">
+                                 alt="{{ $screenshot->name }}">
                             <div class="card-footer">
                                 <small class="text-muted">{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $screenshot->created_at)->DiffForHumans() }}</small>
                             </div>

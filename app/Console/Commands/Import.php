@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\File;
 use Carbon\Carbon;
 use Symfony\Component\Console\Helper\ProgressBar;
 
-class import extends Command
+class Import extends Command
 {
     /**
      * The name and signature of the console command.
@@ -77,6 +77,7 @@ class import extends Command
                 Screenshot::create([
                     'name' => $name,
                     'type' => mime_content_type('storage/app/'.$file),
+                    'full_name' => basename($file),
                     'created_at' => $time,
                     'updated_at' => $time,
                 ]);
@@ -86,6 +87,7 @@ class import extends Command
 
         }
         $bar->finish();
+        $this->info('Importing completed.');
 
     }
 }

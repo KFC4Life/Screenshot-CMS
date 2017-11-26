@@ -16,12 +16,13 @@
 </head>
 <body style="background: #f4f4f4;">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between mb-5">
-        <a class="navbar-brand" href="#">{{ config('app.name', 'Screenshot CMS') }}</a>
+        <a class="navbar-brand" href="{{ env('APP_URL') }}">{{ config('app.name', 'Screenshot CMS') }}</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav mr-auto">
+                @auth
                 <li class="nav-item @if(Request::route()->getName() == 'dashboard') active @endif">
                     <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                 </li>
@@ -31,6 +32,7 @@
                 <li class="nav-item @if(Request::route()->getName() == 'settings') active @endif">
                     <a class="nav-link" href="{{ route('settings') }}">Settings</a>
                 </li>
+                @endauth
             </ul>
             @auth
                 <ul class="navbar-nav ml-auto">

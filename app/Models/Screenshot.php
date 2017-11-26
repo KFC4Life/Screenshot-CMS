@@ -10,6 +10,6 @@ class Screenshot extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'type', 'created_at', 'updated_at',
+        'name', 'type', 'created_at', 'updated_at', 'full_name'
     ];
 }

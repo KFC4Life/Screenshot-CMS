@@ -13,6 +13,12 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('/v1')->group(function () {
+    Route::get('/', function () {
+        return 'This is the Screenshot CMS API, for documentation please visit the repo wiki.';
+    });
+
+   Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
 });

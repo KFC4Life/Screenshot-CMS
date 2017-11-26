@@ -48,57 +48,107 @@ class ScreenshotsController extends Controller
      * */
     public function upload(Request $request)
     {
-        $file = $request->file('file');
         $storage = storage_path('app/public/screenshots');
+        $file = $request->file('file');
         $upload_key = $request->key;
-        if($upload_key == Setting::where('name', 'upload_key')->first()->value) {
+        $type = substr($file->getMimeType(), 0, 5);
 
-            // Check if file already exists
-            if(File::exists(storage_path('app/public/screenshots/'.$file->getClientOriginalName()))) {
-                // When exists return error 500 with file already exists message.
-                abort(500, 'Sorry, a screenshot with that name does already exist, please try again.');
-            } else {
-                // Insert screenshot into database
-                $screenshot = Screenshot::create([
-                    'name' => $file->getFilename(),
-                    'type' => $file->getMimeType(),
-                ]);
 
-                Log::create([
-                    'event' => 'upload',
-                    'ip' => request()->ip(),
-                    'info' => 'File upload - '.$screenshot->name.' ('. $screenshot->type .')',
-                ]);
-
-                // Move uploaded file to storage directory.
-                $file->move($storage,$file->getClientOriginalName());
-
-                return route('screenshot.get', $screenshot->name);
-            }
+        if($file == null) {
+            return response()->json([
+                'success' => false,
+                'screenshot' => [],
+                'error' => 'Please give a file to upload.',
+            ], 500);
+        } elseif($upload_key == null) {
+            return response()->json([
+                'success' => false,
+                'screenshot' => [],
+                'error' => 'Please give a key to validate.',
+            ], 500);
+        } elseif($type != 'image') {
+            return response()->json([
+                'success' => false,
+                'screenshot' => [],
+                'error' => 'File is not an image.',
+            ], 500);
         } else {
-            abort(500, 'Sorry, Invalid key.');
+            if($upload_key == Setting::where('name', 'upload_key')->first()->value) {
+                // Check if file already exists
+                if(File::exists(storage_path('app/public/screenshots/'.$file->getClientOriginalName()))) {
+                    // When exists return error 500 with file already exists message.
+                    return response()->json([
+                        'success' => false,
+                        'screenshot' => [],
+                        'error' => 'File does already exists.',
+                    ], 500);
+                } else {
+                    // Insert screenshot into database
+                    switch($file->getMimeType()) {
+                        case 'image/jpeg':
+                            $new_name = str_random(7);
+                            $new_full_name = $new_name.'.jpg';
+                            break;
+                        case 'image/png':
+                            $new_name = str_random(7);
+                            $new_full_name = $new_name.'.png';
+                            break;
+                        case 'image/gif':
+                            $new_name = str_random(7);
+                            $new_full_name = $new_name.'.gif';
+                            break;
+                        default:
+                            return response()->json([
+                                'success' => false,
+                                'screenshot' => [],
+                                'error' => 'Unknown error'
+                            ]);
+                            break;
+                    }
+
+                    $screenshot = Screenshot::create([
+                        'name' => $new_name,
+                        'type' => $file->getMimeType(),
+                        'full_name' => $new_full_name,
+                    ]);
+
+                    Log::create([
+                        'event' => 'upload',
+                        'ip' => request()->ip(),
+                        'info' => 'File upload - '.$screenshot->name.' ('. $screenshot->type .')',
+                    ]);
+
+                    // Move uploaded file to storage directory.
+                    $file->move($storage,$new_full_name);
+
+                    // TODO: ADD DELETE URL IN RESPONSE
+
+                    return response()->json([
+                        'success' => true,
+                        'screenshot' => [
+                            'url' => route('screenshot.get', $screenshot->name),
+                        ],
+                        'error' => '',
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'screenshot' => [],
+                    'error' => 'Invalid key!',
+                ], 500);
+            }
         }
     }
 
     public function get(Request $request)
     {
-        $name = $request->name;
-
-        $screenshot = Screenshot::where('name', '=', $name)->first();
-
-        switch ($screenshot->type) {
-            case 'image/jpeg':
-                $full_name = $screenshot->name.'.jpg';
-                break;
-            case 'image/png':
-                $full_name = $screenshot->name.'.png';
-                break;
-            case 'image/gif':
-                $full_name = $screenshot->name.'.gif';
-                break;
+        $screenshot = Screenshot::where('name', '=', $request->name)->first();
+        if(!$screenshot == null) {
+            return view('screenshot', compact('screenshot'));
+        } else {
+            return view('errors.screenshot_not_found');
         }
-
-        return view('screenshot', compact('screenshot', 'full_name'));
     }
 
     function getRaw(Request $request)

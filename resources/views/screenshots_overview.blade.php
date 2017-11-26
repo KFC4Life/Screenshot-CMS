@@ -25,7 +25,7 @@
                             @foreach($screenshot_1 as $screenshot)
                                 <div class="col-md-4">
                                     <a target="_blank" href="{{ route('screenshot.get', $screenshot->name) }}">
-                                        <img src="{{ url('/raw/'.$screenshot->name) }}"
+                                        <img src="{{ url('/storage/screenshots/'.$screenshot->full_name) }}"
                                              alt="{{ $screenshot->name }}" class="img-thumbnail">
                                     </a>
                                 </div>

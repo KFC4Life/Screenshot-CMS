@@ -1,0 +1,60 @@
+html {
+    background: url(background.jpg);
+}
+
+body {
+    margin: 0;
+}
+
+img,video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    max-width: 95%;
+    max-height: 90%;
+}
+
+.notice {
+    background: #5f5f60;
+    color: #fff;
+    text-align: center;
+    display: block!important;
+    padding: 1rem 1rem!important;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    font-size: 16px;
+    text-decoration: none;
+    font-family: 'Raleway', sans-serif;
+}
+
+.top-right {
+    position: absolute;
+    right: 10px;
+    top: 18px;
+}
+
+.links > a {
+    color: #ffffff;
+    padding: 0 25px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .1rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-family: 'Raleway', sans-serif;
+}
+
+.title {
+    font-size: 80;
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+    color: #fff;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    height: 85vh;
+}
