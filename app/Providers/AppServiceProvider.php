@@ -19,6 +19,10 @@ class AppServiceProvider extends ServiceProvider
         if (Schema::hasTable('settings')) {
             View::share('screenshots_count', count(DB::table('screenshots')->get()));
         }
+        
+        if (isset($_SERVER["HTTP_CF_CONNECTING_IP"])) {
+            $_SERVER['REMOTE_ADDR'] = $_SERVER["HTTP_CF_CONNECTING_IP"];
+        }
     }
 
     /**
