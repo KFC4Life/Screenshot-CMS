@@ -9,13 +9,16 @@ Please take a look at our <a href="https://github.com/siemen6/Screenshot-CMS/wik
 - Private upload key
 - Bootstrap 4 Design
 - Simple setup command
+- System log
 
 ## Upcoming features
 - Dark theme
 - Backup function
 - Statistics
-- System log
 - Advanced settings
+
+## Got an idea?
+You're free to <a href="https://github.com/siemen6/Screenshot-CMS/issues/new">create</a> a issue.
 
 ## Screenshots
 ![Screenshot 1](https://i.siemenrotensen.nl/oTQXOXLXv)
