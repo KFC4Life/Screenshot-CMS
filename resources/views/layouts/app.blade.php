@@ -32,6 +32,9 @@
                 <li class="nav-item @if(Request::route()->getName() == 'settings') active @endif">
                     <a class="nav-link" href="{{ route('settings') }}">Settings</a>
                 </li>
+                <li class="nav-item @if(Request::route()->getName() == 'logbook') active @endif">
+                    <a class="nav-link" href="{{ route('logbook') }}">Logbook</a>
+                </li>
                 @endauth
             </ul>
             @auth

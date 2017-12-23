@@ -28,6 +28,8 @@ Route::post('/screenshots/upload', 'ScreenshotsController@upload')->name('screen
 Route::get('/settings', 'SettingsController@index')->name('settings');
 Route::post('/settings/key/generate', 'SettingsController@generateKey')->name('settings.key.generate');
 
+Route::get('/logbook', 'LogBookController@index')->name('logbook');
+
 // Authentication Routes
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('login');
