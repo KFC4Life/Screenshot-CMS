@@ -18,7 +18,7 @@ Please take a look at our <a href="https://github.com/siemen6/Screenshot-CMS/wik
 - Advanced settings
 
 ## Got an idea?
-You're free to <a href="https://github.com/siemen6/Screenshot-CMS/issues/new">create</a> a issue.
+Feel free to <a href="https://github.com/siemen6/Screenshot-CMS/issues/new">create</a> an issue.
 
 ## Screenshots
 ![Screenshot 1](https://i.siemenrotensen.nl/oTQXOXLXv)
