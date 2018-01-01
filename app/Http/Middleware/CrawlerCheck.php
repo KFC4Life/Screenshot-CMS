@@ -24,18 +24,21 @@ class CrawlerCheck
                 $crawl = new CrawlStatus();
                 $crawl->screenshot_id = $request->path();
                 $crawl->platform = 'discord';
+                $crawl->save();
                 break;
             case 'Mozilla/5.0 (Windows NT 6.1; WOW64) SkypeUriPreview Preview/0.5':
                 // SkypeUriPreview
                 $crawl = new CrawlStatus();
                 $crawl->screenshot_id = $request->path();
                 $crawl->platform = 'skype';
+                $crawl->save();
                 break;
             case 'Slack-ImgProxy 0.19 (+https://api.slack.com/robots)':
                 // Slack
                 $crawl = new CrawlStatus();
                 $crawl->screenshot_id = $request->path();
                 $crawl->platform = 'slack';
+                $crawl->save();
                 break;
             default:
                 // Do nothing

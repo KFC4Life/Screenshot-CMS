@@ -9,7 +9,7 @@ class CrawlStatus extends Model
     protected $table = 'crawl_status';
 
     protected $fillable = [
-        ''
+        'platform', 'screenshot_id'
     ];
 
     public function screenshot()
