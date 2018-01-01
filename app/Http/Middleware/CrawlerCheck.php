@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\CrawlStatus;
+use Closure;
 
 class CrawlerCheck
 {
