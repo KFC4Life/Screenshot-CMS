@@ -35,5 +35,5 @@ Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
-Route::domain(env('APP_URL'))->get('/{name}', 'ScreenshotsController@get')->name('screenshot.get');
+Route::domain(env('APP_URL'))->get('/{name}', 'ScreenshotsController@get')->name('screenshot.get')->middleware('CrawlerCheck');
 Route::domain(env('APP_URL'))->get('/raw/{name}', 'ScreenshotsController@getRaw')->name('screenshot.get.raw');

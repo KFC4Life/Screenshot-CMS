@@ -9,6 +9,7 @@
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <link href="{{ asset('style.css') }}" rel="stylesheet" type="text/css">
 </head>
@@ -23,5 +24,47 @@
         <a href="{{ route('login') }}">Login</a>
     </div>
     @endguest
-    <img src="{{ url('/storage/screenshots/'.$screenshot->full_name) }}" />
+    @if(Auth::check())
+        <a href="#crawler-info">
+            <img src="{{ url('/storage/screenshots/'.$screenshot->full_name) }}" />
+        </a>
+        <div id="crawler-info" class="overlay">
+            <a class="cancel" href="#"></a>
+            <div class="modal">
+                <h2>Crawler Information</h2>
+                <div class="content">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Platform</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Slack</td>
+                                <td><i class="fa fa-check"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Discord</td>
+                                <td><i class="fa fa-times"></i></td>
+                            </tr>
+                            <tr>
+                                <td>Skype</td>
+                                <td><i class="fa fa-check"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <br />
+
+                    <p>Click outside the modal to close.</p>
+                </div>
+            </div>
+        </div>
+    @else
+        <img src="{{ url('/storage/screenshots/'.$screenshot->full_name) }}" />
+    @endif
 </body>
