@@ -30,6 +30,8 @@ Route::post('/settings/key/generate', 'SettingsController@generateKey')->name('s
 
 Route::get('/logbook', 'LogBookController@index')->name('logbook');
 
+Route::get('/statistics', 'StatisticsController@index')->name('statistics');
+
 // Authentication Routes
 Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('login');

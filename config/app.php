@@ -168,6 +168,9 @@ return [
          * Package Service Providers...
          */
 
+        ConsoleTVs\Charts\ChartsServiceProvider::class,
+        Jaybizzle\LaravelCrawlerDetect\LaravelCrawlerDetectServiceProvider::class,
+
         /*
          * Application Service Providers...
          */
@@ -225,6 +228,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+        'Crawler' => Jaybizzle\LaravelCrawlerDetect\Facades\LaravelCrawlerDetect::class,
+        'Charts' => ConsoleTVs\Charts\Charts::class,
 
     ],
 

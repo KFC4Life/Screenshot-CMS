@@ -16,7 +16,7 @@ class CreateCrawlStatusTable extends Migration
         Schema::create('crawl_status', function (Blueprint $table) {
             $table->increments('id');
             $table->string('screenshot_id');
-            $table->boolean('platform');
+            $table->string('platform');
             $table->timestamps();
         });
     }
