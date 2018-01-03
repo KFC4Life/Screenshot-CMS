@@ -1,4 +1,7 @@
 # Screenshot CMS
+[![](https://shield.with.social/cc/github/siemen6/Screenshot-CMS/master.svg)](https://github.com/siemen6/Screenshot-CMS)
+[![](https://img.shields.io/badge/license-MIT-blue.svg)]()
+
 Screenshot CMS is a simple web application to manage your taken screenshots.
 
 ## How to install?
