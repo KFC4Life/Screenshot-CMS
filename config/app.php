@@ -167,7 +167,6 @@ return [
         /*
          * Package Service Providers...
          */
-
         ConsoleTVs\Charts\ChartsServiceProvider::class,
         Jaybizzle\LaravelCrawlerDetect\LaravelCrawlerDetectServiceProvider::class,
 

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\Notifications\NewScreenshotUploaded;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
@@ -106,11 +108,11 @@ class ScreenshotsController extends Controller
                             break;
                     }
 
-                    $screenshot = Screenshot::create([
-                        'name' => $new_name,
-                        'type' => $file->getMimeType(),
-                        'full_name' => $new_full_name,
-                    ]);
+                    $screenshot = new Screenshot;
+                    $screenshot->name = $new_name;
+                    $screenshot->type = $file->getMimeType();
+                    $screenshot->full_name = $new_full_name;
+                    $screenshot->save();
 
                     Log::create([
                         'event' => 'upload',
@@ -118,8 +120,14 @@ class ScreenshotsController extends Controller
                         'info' => 'File upload - '.$screenshot->name.' ('. $screenshot->type .')',
                     ]);
 
+                    $user = \App\User::first();
+
                     // Move uploaded file to storage directory.
                     $file->move($storage,$new_full_name);
+
+                    if($user->slack_webhook_url OR $user->discord_webhook_url != null) {
+                        $user->notify(new NewScreenshotUploaded($screenshot));
+                    }
 
                     // TODO: ADD DELETE URL IN RESPONSE
 

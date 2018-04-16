@@ -27,6 +27,7 @@ Route::post('/screenshots/upload', 'ScreenshotsController@upload')->name('screen
 
 Route::get('/settings', 'SettingsController@index')->name('settings');
 Route::post('/settings/key/generate', 'SettingsController@generateKey')->name('settings.key.generate');
+Route::post('/settings/slackwebhook/update', 'SettingsController@setSlackWebHookUrl')->name('settings.slackwebhook.update');
 
 Route::get('/logbook', 'LogBookController@index')->name('logbook');
 

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use App\Models\Setting;
-
+use Illuminate\Support\Facades\Auth;
 
 class SettingsController extends Controller
 {
@@ -33,6 +34,20 @@ class SettingsController extends Controller
 
         return back()->with([
             'msg' => 'Succesfully generated a new upload key, Yay!'
+        ]);
+    }
+
+    public function setSlackWebHookUrl(Request $request)
+    {
+        $user = User::find(Auth::user()->id);
+
+        $user->slack_webhook_url = $request->input('slack_webhook_url');
+        $user->discord_webhook_url = $request->input('discord_webhook_url');
+
+        $user->save();
+
+        return back()->with([
+            'msg' => 'Succesfully updated webhook urls, Yay!'
         ]);
     }
 }
