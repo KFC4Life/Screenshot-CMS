@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Routing\UrlGenerator;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
@@ -26,7 +28,7 @@ class AppServiceProvider extends ServiceProvider
 
         if(env('REDIRECT_HTTPS'))
         {
-            $url->forceSchema('https');
+            URL::forceScheme('https');
         }
     }
 
