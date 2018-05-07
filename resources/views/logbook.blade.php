@@ -38,7 +38,9 @@
             </table>
         </div>
 
-        {{ $log->links() }}
+        <div class="col-md-12">
+            {{ $log->links() }}
+        </div>
         @else
             <h1 class="text-center">
                 There are no logged actions found.<br />Come back later.
