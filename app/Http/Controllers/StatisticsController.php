@@ -9,7 +9,10 @@ class StatisticsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:web');
+        $this->middleware([
+            'auth:web',
+            'role:admin'
+        ]);
     }
 
     public function index()

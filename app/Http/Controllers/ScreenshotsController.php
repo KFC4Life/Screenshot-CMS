@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Notifications\Notifications\NewScreenshotUploaded;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 use App\Models\Screenshot;
 use App\Models\Log;
 use App\Models\Setting;
+use Auth;
+use Mockery\Exception;
 
 class ScreenshotsController extends Controller
 {
@@ -21,33 +23,141 @@ class ScreenshotsController extends Controller
      * */
     public function __construct()
     {
-        $this->middleware('auth:web')->except(['upload', 'get', 'getRaw']);
+        // Protect functions with authentication
+        $this->middleware('auth:web')->except([
+            'upload',
+            'get',
+            'getRaw',
+        ]);
+
+        $this->middleware('role:admin')->except([
+            'upload',
+            'get',
+            'getRaw',
+            'indexMine',
+            'destroy',
+            'destroyPermanently',
+            'restore',
+        ]);
     }
 
-    /*
-     * Show recent screenshots
+    /**
+     * Show screenshots of the authenticated user
      *
-     * */
-    public function indexRecent()
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function indexMine()
     {
-        $screenshots = DB::table('screenshots')->latest()->paginate(10);
-        return view('screenshots_recent', compact('screenshots'));
+        $screenshots = Screenshot::where('user_id', '=', Auth::id())->latest()->paginate(6);
+        return view('screenshots', compact('screenshots'));
     }
 
-    /*
-     * Show a screenshots overview
+    /**
+     * Show all screenshots
      *
-     * */
-    public function indexOverview()
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function indexAll()
     {
-        $screenshots = DB::table('screenshots')->latest()->paginate(15);
-        return view('screenshots_overview', compact('screenshots'));
+        $screenshots = Screenshot::latest()->paginate(6);
+        return view('screenshots', compact('screenshots'));
     }
 
-    /*
+    /**
+     * Show deleted screenshots
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function indexTrash()
+    {
+        $screenshots = Screenshot::onlyTrashed()->latest('deleted_at')->paginate(6);
+        return view('screenshots', compact('screenshots'));
+    }
+
+    /**
+     * Delete a screenshot
+     *
+     * @param Screenshot $screenshot
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroy($screenshot)
+    {
+        $sc = Screenshot::where('name', '=', $screenshot)
+                ->first();
+
+        if($sc == null) {
+            return back();
+        }
+
+        Log::create([
+            'event' => 'delete',
+            'ip' => request()->ip(),
+            'info' => 'File deleted - '.$sc->first()->name.' ('. $sc->type .')',
+        ]);
+
+        $sc->delete();
+
+        return redirect()->back();
+    }
+
+    /**
+     * Delete a screenshot permanently
+     *
+     * @param $screenshot
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function destroyPermanently($screenshot)
+    {
+        $sc = Screenshot::onlyTrashed()
+            ->where('name', '=', $screenshot)
+            ->first();
+
+        if($sc == null) {
+            return back();
+        }
+
+        Storage::disk('local')->delete('public/screenshots/'.$sc->full_name);
+
+        Log::create([
+            'event' => 'permanently-delete',
+            'ip' => request()->ip(),
+            'info' => 'File permanently deleted - '.$sc->name.' ('. $sc->type .')',
+        ]);
+
+        $sc->forceDelete();
+
+        return redirect()->route('screenshots.trash');
+    }
+
+    /**
+     * Restore a deleted soft-deleted screenshot
+     *
+     * @param $screenshot
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function restore($screenshot)
+    {
+        $sc = Screenshot::onlyTrashed()
+            ->where('name', '=', $screenshot)
+            ->first();
+
+        Log::create([
+            'event' => 'restore',
+            'ip' => request()->ip(),
+            'info' => 'File restored - '.$sc->name.' ('. $sc->type .')',
+        ]);
+
+        $sc->restore();
+
+        return back();
+    }
+
+    /**
      * Upload a screenshot
      *
-     * */
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function upload(Request $request)
     {
         $storage = storage_path('app/public/screenshots');
@@ -57,95 +167,84 @@ class ScreenshotsController extends Controller
 
 
         if($file == null) {
-            return response()->json([
-                'success' => false,
-                'screenshot' => [],
-                'error' => 'Please give a file to upload.',
-            ], 500);
+            throw new \App\Exceptions\Screenshots\NoFileSpecifiedToUpload();
         } elseif($upload_key == null) {
-            return response()->json([
-                'success' => false,
-                'screenshot' => [],
-                'error' => 'Please give a key to validate.',
-            ], 500);
+            throw new \App\Exceptions\Screenshots\NoApiTokenSpecifiedToValidate();
         } elseif($type != 'image') {
-            return response()->json([
-                'success' => false,
-                'screenshot' => [],
-                'error' => 'File is not an image.',
-            ], 500);
+            throw new \App\Exceptions\Screenshots\FileIsNotAnImage();
         } else {
-            if($upload_key == Setting::where('name', 'upload_key')->first()->value) {
-                // Check if file already exists
-                if(File::exists(storage_path('app/public/screenshots/'.$file->getClientOriginalName()))) {
-                    // When exists return error 500 with file already exists message.
+            $keys = User::all()->makeVisible('api_token')->pluck('api_token')->toArray();
+                if(in_array($upload_key, $keys)) {
+                    // Check if file already exists
+                    if(File::exists(storage_path('app/public/screenshots/'.$file->getClientOriginalName()))) {
+                        // When exists throw exception
+                        throw new \App\Exceptions\Screenshots\FileAlreadyExists();
+                    } else {
+                        // Insert screenshot into database
+                        switch($file->getMimeType()) {
+                            case 'image/jpeg':
+                                $new_name = str_random(7);
+                                $new_full_name = $new_name.'.jpg';
+                                break;
+                            case 'image/png':
+                                $new_name = str_random(7);
+                                $new_full_name = $new_name.'.png';
+                                break;
+                            case 'image/gif':
+                                $new_name = str_random(7);
+                                $new_full_name = $new_name.'.gif';
+                                break;
+                            default:
+                                throw new \App\Exceptions\Screenshots\FileTypeNotSupported();
+                                return response()->json([
+                                    'success' => false,
+                                    'screenshot' => [],
+                                    'error' => 'We don\'t support that file type!',
+                                ]);
+                                break;
+                        }
+
+                        $user = User::where('api_token', '=', $upload_key)
+                            ->first();
+
+                        $screenshot = new Screenshot;
+                        $screenshot->name = $new_name;
+                        $screenshot->type = $file->getMimeType();
+                        $screenshot->full_name = $new_full_name;
+                        $screenshot->user_id = $user->id;
+                        $screenshot->save();
+
+                        Log::create([
+                            'event' => 'upload',
+                            'ip' => request()->ip(),
+                            'info' => 'File upload - '.$screenshot->name.' ('. $screenshot->type .')',
+                        ]);
+
+                        // Move uploaded file to storage directory.
+                        $file->move($storage,$new_full_name);
+
+                        if($user->slack_webhook_url != null || $user->discord_webhook_url != null) {
+                            $user->notify(new NewScreenshotUploaded($screenshot));
+                        }
+
+                        // TODO: ADD DELETE URL IN RESPONSE
+
+                        return response()->json([
+                            'success' => true,
+                            'screenshot' => [
+                                'url' => route('screenshot.get', $screenshot->name),
+                                'delete_url' => 'Use the web UI please.',
+                            ],
+                            'error' => '',
+                        ]);
+                    }
+                } else {
                     return response()->json([
                         'success' => false,
                         'screenshot' => [],
-                        'error' => 'File does already exists.',
+                        'error' => 'Invalid key!',
                     ], 500);
-                } else {
-                    // Insert screenshot into database
-                    switch($file->getMimeType()) {
-                        case 'image/jpeg':
-                            $new_name = str_random(7);
-                            $new_full_name = $new_name.'.jpg';
-                            break;
-                        case 'image/png':
-                            $new_name = str_random(7);
-                            $new_full_name = $new_name.'.png';
-                            break;
-                        case 'image/gif':
-                            $new_name = str_random(7);
-                            $new_full_name = $new_name.'.gif';
-                            break;
-                        default:
-                            return response()->json([
-                                'success' => false,
-                                'screenshot' => [],
-                                'error' => 'Unknown error'
-                            ]);
-                            break;
-                    }
-
-                    $screenshot = new Screenshot;
-                    $screenshot->name = $new_name;
-                    $screenshot->type = $file->getMimeType();
-                    $screenshot->full_name = $new_full_name;
-                    $screenshot->save();
-
-                    Log::create([
-                        'event' => 'upload',
-                        'ip' => request()->ip(),
-                        'info' => 'File upload - '.$screenshot->name.' ('. $screenshot->type .')',
-                    ]);
-
-                    $user = \App\User::first();
-
-                    // Move uploaded file to storage directory.
-                    $file->move($storage,$new_full_name);
-
-                    if($user->slack_webhook_url OR $user->discord_webhook_url != null) {
-                        $user->notify(new NewScreenshotUploaded($screenshot));
-                    }
-
-                    // TODO: ADD DELETE URL IN RESPONSE
-
-                    return response()->json([
-                        'success' => true,
-                        'screenshot' => [
-                            'url' => route('screenshot.get', $screenshot->name),
-                        ],
-                        'error' => '',
-                    ]);
                 }
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'screenshot' => [],
-                    'error' => 'Invalid key!',
-                ], 500);
-            }
         }
     }
 

@@ -10,6 +10,11 @@ class Screenshot extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'name', 'type', 'created_at', 'updated_at', 'full_name'
+        'name', 'type', 'created_at', 'updated_at', 'full_name', 'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

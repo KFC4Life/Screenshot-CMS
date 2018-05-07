@@ -57,10 +57,13 @@ class Setup extends Command
 
         $user_name = $this->ask('Whats the name of the new user you\'re creating?');
 
-        User::create([
+        $user = User::create([
             'email' => $user_email,
             'name' => $user_name,
             'password' => bcrypt($user_password_raw),
+            'api_token' => str_random(20),
         ]);
+
+        $user->assignRole('admin');
     }
 }

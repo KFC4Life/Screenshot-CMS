@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\User;
 use Illuminate\Console\Command;
 use App\Models\Screenshot;
 use Storage;
@@ -46,6 +47,7 @@ class Import extends Command
         $files = Storage::files('public/screenshots/');
 
         $bar = $this->output->createProgressBar(count($files));
+        $user = User::role('admin')->first();
 
         $bar->start();
 
@@ -69,7 +71,7 @@ class Import extends Command
             $file_time = filemtime('storage/app/'.$file);
             $time = Carbon::createFromTimestamp($file_time)->toDateTimeString();
 
-            if($db_result = Screenshot::where('name', '=', $name)->count() > 0) {
+            if($db_result = Screenshot::withTrashed()->where('name', '=', $name)->count() > 0) {
                 // Do nothing
             } else {
                 // Insert into the database
@@ -80,6 +82,7 @@ class Import extends Command
                     'full_name' => basename($file),
                     'created_at' => $time,
                     'updated_at' => $time,
+                    'user_id' => $user->id,
                 ]);
 
             }

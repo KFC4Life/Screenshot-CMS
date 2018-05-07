@@ -18,6 +18,8 @@ class Kernel extends ConsoleKernel
         Commands\Import::class,
         Commands\Setup::class,
         Commands\SetupReset::class,
+        Commands\AssignUserToUnassignedScreenshots::class,
+        Commands\PromoteUser::class,
     ];
 
     /**

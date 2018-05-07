@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="row">
 
-        <div class="col-md-11">
+    @if($years == '[]')
+        <h1 class="text-center">Can't show statistics, no screenshots found.</h1>
+    @else
+        <div class="col-md-12">
             <div class="card">
                 <div class="card-body">
                     @foreach($years as $year)
@@ -12,6 +14,6 @@
                 </div>
             </div>
         </div>
+    @endif
 
-    </div>
 @endsection

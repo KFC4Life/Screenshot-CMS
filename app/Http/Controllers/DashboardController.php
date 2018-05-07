@@ -20,22 +20,12 @@ class DashboardController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Shows application dashboard
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index()
     {
-        $updated_at = Setting::where('name', 'upload_key')->first()->updated_at;
-        $screenshots = Screenshot::all();
-        if(!$screenshots->isEmpty()) {
-            $last_added_id = DB::table('screenshots')->latest()->first()->id;
-            $last_added = Screenshot::find($last_added_id)->created_at;
-            $last_added_empty = false;
-            return view('dashboard', compact('updated_at', 'last_added', 'last_added_empty'));
-        } else {
-            $last_added_empty = true;
-            return view('dashboard', compact('updated_at', 'last_added_empty'));
-        }
+        return view('dashboard');
     }
 }
