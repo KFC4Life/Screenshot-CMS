@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Screenshot;
 use Charts;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
 
 class StatisticsController extends Controller
 {
@@ -17,6 +19,13 @@ class StatisticsController extends Controller
 
     public function index()
     {
+        $file_size = 0;
+        foreach(Storage::disk('local')->allFiles('/public/screenshots') as $file)
+        {
+            $file_size += Storage::disk('local')->size($file);
+        }
+        $file_size = number_format($file_size / 1048576,2);
+
         $years = Screenshot::selectRaw('year(created_at) year')->groupBy('year')->get();
         $charts = [];
 
@@ -31,7 +40,7 @@ class StatisticsController extends Controller
         }
 
         return view('statistics', compact([
-            'charts', 'years'
+            'charts', 'years', 'file_size'
         ]));
     }
 }
