@@ -30,7 +30,7 @@ class StatisticsController extends Controller
         $charts = [];
 
         foreach ($years as $year) {
-            $charts[$year->year] = Charts::database(Screenshot::all(), 'line', 'highcharts')
+            $charts[$year->year] = Charts::database(Screenshot::all(), 'line', 'morris')
                 ->dimensions(0, 400)
                 ->dateColumn('created_at')
                 ->title('Screenshots per month ('. $year->year .')')
