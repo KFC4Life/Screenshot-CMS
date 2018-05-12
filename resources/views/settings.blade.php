@@ -27,7 +27,7 @@
         @endif
 
         <div class="col-md-6">
-            <div class="card mb-3">
+            <div class="card mb-3 {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
                 <h5 class="card-header">Notifications</h5>
                 <div class="card-body">
                     <p class="card-text">
@@ -47,9 +47,32 @@
                     </form>
                 </div>
             </div>
+
+            <div class="card mt-3 {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
+                <h5 class="card-header">
+                    User Interface
+                </h5>
+                <div class="card-body">
+                    <form method="POST" action="{{ route('settings.account.darktheme.update') }}">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="_method" value="PUT">
+
+                        <h5 class="card-title">Dark Theme</h5>
+                        <p class="card-text">
+                            <select name="dark_theme" class="form-control">
+                                <option value="0">Disabled</option>
+                                <option value="1" @if(Auth::user()->dark_theme_status) selected @endif>Enabled</option>
+                            </select>
+                        </p>
+
+                        <input type="submit" class="btn btn-primary" value="Save changes">
+                    </form>
+                </div>
+            </div>
+
         </div>
         <div class="col-md-6">
-            <div class="card">
+            <div class="card {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
                 <h5 class="card-header">
                     API Settings
                 </h5>
@@ -78,7 +101,7 @@
                 </div>
             </div>
             @if(Auth::user()->isAdmin())
-                <div class="card mt-3">
+                <div class="card mt-3 {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
                     <h5 class="card-header">
                         Admin Settings
                     </h5>
@@ -93,7 +116,7 @@
         </div>
     </div>
 
-    <div class="card mt-3">
+    <div class="card mt-3 {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
         <h5 class="card-header">
             Account
         </h5>

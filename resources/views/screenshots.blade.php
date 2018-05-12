@@ -21,7 +21,7 @@
         {{ $screenshots->links() }}
 
         @if(count($screenshots) > 0)
-            <table class="table table-responsive table-striped">
+            <table class="table table-responsive table-striped {{ Auth::user()->dark_theme_status ? 'table-dark' : null }}">
                 <thead>
                 <tr>
                     <th scope="col">Image</th>

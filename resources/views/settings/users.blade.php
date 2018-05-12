@@ -24,7 +24,7 @@
             </div>
         @endif
 
-        <div class="card">
+        <div class="card {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
             <h5 class="card-header">
                 User Settings
             </h5>
@@ -36,12 +36,12 @@
             </div>
         </div>
 
-        <div class="card mt-3">
+        <div class="card mt-3 {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
             <h5 class="card-header" style="border-bottom: 0;">
                Users
             </h5>
             <div class="card-body table-responsive" style="padding: 0;">
-                <table class="table table-striped" style="margin-bottom: 0;">
+                <table class="table table-striped {{ Auth::user()->dark_theme_status ? 'table-dark' : null }}" style="margin-bottom: 0;">
                     <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -75,7 +75,7 @@
             </div>
         </div>
 
-        <div class="card mt-3">
+        <div class="card mt-3 {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
             <div class="card-header">
                 Create a user
             </div>

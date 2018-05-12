@@ -17,6 +17,31 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous" />
     {!! Charts::assets() !!}
+    @auth
+        @if(Auth::user()->dark_theme_status)
+            <style>
+                body {
+                    background: dimgray !important;
+                    color: #fff !important;
+                }
+                .form-control {
+                    background-color: dimgray !important;
+                    color: #fff;
+                    border: 1px solid dimgray;
+                }
+                .form-control:focus {
+                    color: #fff;
+                }
+                ::placeholder {
+                    color: #fff !important;
+                    opacity: 0.7 !important;
+                }
+                .text-muted {
+                    color: #aeaeae !important;
+                }
+            </style>
+        @endif
+    @endauth
 </head>
 <body style="background: #f4f4f4;">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark justify-content-between mb-5">

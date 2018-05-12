@@ -58,6 +58,7 @@ Route::as('settings')->prefix('settings')->group(function () {
                 Route::delete('/{user}/delete', 'SettingsController@deleteUser')->name('delete');
             });
         });
+        Route::put('/account/dark-theme/update', 'SettingsController@updateDarkTheme')->name('account.darktheme.update');
         Route::post('/account/api/key/generate', 'SettingsController@generateKey')->name('key.generate');
         Route::post('/slackwebhook/update', 'SettingsController@setSlackWebHookUrl')->name('slackwebhook.update');
         Route::put('/account/update', 'SettingsController@updateAccount')->name('account.update');

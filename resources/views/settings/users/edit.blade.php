@@ -13,7 +13,7 @@
         </div>
     @endif
 
-    <div class="card">
+    <div class="card {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
         <h5 class="card-header">
             Edit User
         </h5>

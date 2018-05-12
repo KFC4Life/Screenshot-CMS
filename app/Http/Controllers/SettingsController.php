@@ -22,6 +22,7 @@ class SettingsController extends Controller
             'generateKey',
             'setSlackWebHookUrl',
             'updateAccount',
+            'updateDarkTheme',
         ]);
     }
 
@@ -56,9 +57,9 @@ class SettingsController extends Controller
 
         $user->save();
 
-        return back()->with([
-            'msg' => 'Succesfully updated webhook urls, Yay!'
-        ]);
+        Session::flash('success', 'Succesfully updated webhook urls, Yay!');
+
+        return back();
     }
 
     public function users()
@@ -180,7 +181,7 @@ class SettingsController extends Controller
 
         $validator->validate();
 
-        if($request->files_destination == 'account') {
+        if ($request->files_destination == 'account') {
             $screenshots = Screenshot::where('user_id', '=', $user->id)
                 ->update([
                     'user_id' => $request->migration_user,
@@ -189,7 +190,7 @@ class SettingsController extends Controller
             $screenshots = Screenshot::where('user_id', '=', $user->id)
                 ->get();
 
-            foreach($screenshots as $screenshot) {
+            foreach ($screenshots as $screenshot) {
                 $screenshot->delete();
             }
         }
@@ -199,5 +200,19 @@ class SettingsController extends Controller
         Session::flash('success', 'User succesfully deleted!');
 
         return redirect()->route('settings.users');
+    }
+    public function updateDarkTheme(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'dark_theme' => 'required|in:0,1'
+        ])->validate();
+
+        $user = User::find(Auth::id());
+        $user->dark_theme_status = $request->dark_theme;
+        $user->save();
+
+        Session::flash('success', 'Dark theme settings successfully updated!');
+
+        return back();
     }
 }
