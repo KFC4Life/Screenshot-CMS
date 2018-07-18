@@ -232,7 +232,9 @@ class ScreenshotsController extends Controller
                         return response()->json([
                             'success' => true,
                             'screenshot' => [
-                                'url' => route('screenshot.get', $screenshot->name),
+                                'url' => route('screenshot.get', [
+                                    $screenshot->name,
+                                ]),
                                 'delete_url' => 'Use the web UI please.',
                             ],
                             'error' => '',
@@ -250,8 +252,7 @@ class ScreenshotsController extends Controller
 
     public function get(Request $request)
     {
-        $screenshot = Screenshot::where('name', '=', $request->name)->first();
-        if(!$screenshot == null) {
+        if($screenshot = Screenshot::where('name', '=', $request->name)->exists()) {
             return view('screenshot', compact('screenshot'));
         } else {
             return view('errors.screenshot_not_found');

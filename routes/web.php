@@ -60,7 +60,7 @@ Route::as('settings')->prefix('settings')->group(function () {
         });
         Route::put('/account/dark-theme/update', 'SettingsController@updateDarkTheme')->name('account.darktheme.update');
         Route::post('/account/api/key/generate', 'SettingsController@generateKey')->name('key.generate');
-        Route::post('/slackwebhook/update', 'SettingsController@setSlackWebHookUrl')->name('slackwebhook.update');
+        Route::post('/webhooks/update', 'SettingsController@setWebHooks')->name('webhooks.update');
         Route::put('/account/update', 'SettingsController@updateAccount')->name('account.update');
         Route::put('/account/password/update', 'SettingsController@updateAccountPassword')->name('account.password.update');
     });
@@ -75,5 +75,10 @@ Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
 Route::post('login', 'Auth\LoginController@login')->name('login');
 Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
+/*
+|--------------------------------------------------------------------------
+| Routes for viewing screenshots
+|--------------------------------------------------------------------------
+*/
 Route::domain(env('APP_URL'))->get('/{name}', 'ScreenshotsController@get')->name('screenshot.get')->middleware('CrawlerCheck');
 Route::domain(env('APP_URL'))->get('/raw/{name}', 'ScreenshotsController@getRaw')->name('screenshot.get.raw');

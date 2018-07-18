@@ -41,11 +41,6 @@ class Setup extends Command
     {
         $this->createUser();
 
-        Setting::create([
-            'name' => 'upload_key',
-            'value' => str_random(20),
-        ]);
-
         $this->info('Installation succesfully finished, you can now login.');
     }
 

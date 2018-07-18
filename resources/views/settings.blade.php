@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="row">
+    <div class="row mb-3">
 
         @if(Session::get('success'))
             <div class="col-md-12">
@@ -33,7 +33,7 @@
                     <p class="card-text">
                         You can set a webhook url if you want to get notified when a new screenshot is uploaded.
                     </p>
-                    <form method="POST" action="{{ route('settings.slackwebhook.update') }}">
+                    <form method="POST" action="{{ route('settings.webhooks.update') }}">
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label>Slack Webhook</label>
@@ -50,22 +50,35 @@
 
             <div class="card mt-3 {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
                 <h5 class="card-header">
-                    User Interface
+                    Account
                 </h5>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('settings.account.darktheme.update') }}">
+                    <form method="POST" action="{{ route('settings.account.update') }}">
+                        <input type="hidden" name="_method" value="PUT" />
                         {{ csrf_field() }}
-                        <input type="hidden" name="_method" value="PUT">
-
-                        <h5 class="card-title">Dark Theme</h5>
-                        <p class="card-text">
-                            <select name="dark_theme" class="form-control">
-                                <option value="0">Disabled</option>
-                                <option value="1" @if(Auth::user()->dark_theme_status) selected @endif>Enabled</option>
-                            </select>
-                        </p>
-
-                        <input type="submit" class="btn btn-primary" value="Save changes">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" class="form-control" name="name" value="{{ Auth::user()->name }}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="text" class="form-control" name="email" value="{{ Auth::user()->email }}" />
+                        </div>
+                        <input type="submit" class="btn btn-primary" value="Save changes"/>
+                    </form>
+                    <hr />
+                    <form method="POST" action="{{ route('settings.account.password.update') }}">
+                        <input type="hidden" name="_method" value="PUT" />
+                        {{ csrf_field() }}
+                        <div class="form-group">
+                            <label>New password</label>
+                            <input type="password" class="form-control" name="password" placeholder="•••••••••" />
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm new password</label>
+                            <input type="password" class="form-control" name="password_confirmation" placeholder="•••••••••" />
+                        </div>
+                        <input type="submit" class="btn btn-primary" value="Save changes"/>
                     </form>
                 </div>
             </div>
@@ -113,41 +126,28 @@
                     </div>
                 </div>
             @endif
-        </div>
-    </div>
 
-    <div class="card mt-3 {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
-        <h5 class="card-header">
-            Account
-        </h5>
-        <div class="card-body">
-            <form method="POST" action="{{ route('settings.account.update') }}">
-                <input type="hidden" name="_method" value="PUT" />
-                {{ csrf_field() }}
-                <div class="form-group">
-                    <label>Name</label>
-                    <input type="text" class="form-control" name="name" value="{{ Auth::user()->name }}" />
+            <div class="card mt-3 {{ Auth::user()->dark_theme_status ? 'text-white bg-dark' : null }}">
+                <h5 class="card-header">
+                    User Interface
+                </h5>
+                <div class="card-body">
+                    <form method="POST" action="{{ route('settings.account.darktheme.update') }}">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="_method" value="PUT">
+
+                        <h5 class="card-title">Dark Theme</h5>
+                        <p class="card-text">
+                            <select name="dark_theme" class="form-control">
+                                <option value="0">Disabled</option>
+                                <option value="1" @if(Auth::user()->dark_theme_status) selected @endif>Enabled</option>
+                            </select>
+                        </p>
+
+                        <input type="submit" class="btn btn-primary" value="Save changes">
+                    </form>
                 </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="text" class="form-control" name="email" value="{{ Auth::user()->email }}" />
-                </div>
-                <input type="submit" class="btn btn-primary" value="Save changes"/>
-            </form>
-            <hr />
-            <form method="POST" action="{{ route('settings.account.password.update') }}">
-                <input type="hidden" name="_method" value="PUT" />
-                {{ csrf_field() }}
-                <div class="form-group">
-                    <label>New password</label>
-                    <input type="password" class="form-control" name="password" placeholder="•••••••••" />
-                </div>
-                <div class="form-group">
-                    <label>Confirm new password</label>
-                    <input type="password" class="form-control" name="password_confirmation" placeholder="•••••••••" />
-                </div>
-                <input type="submit" class="btn btn-primary" value="Save changes"/>
-            </form>
+            </div>
         </div>
     </div>
 

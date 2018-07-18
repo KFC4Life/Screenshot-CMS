@@ -18,6 +18,6 @@
 </div>
 @endguest
 <div class="title">
-    Page or screenshot not found
+    Screenshot not found
 </div>
 </body>

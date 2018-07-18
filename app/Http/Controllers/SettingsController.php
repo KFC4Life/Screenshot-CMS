@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Screenshot;
 use App\User;
 use Illuminate\Http\Request;
-use App\Models\Setting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
@@ -20,8 +19,9 @@ class SettingsController extends Controller
         $this->middleware('role:admin')->except([
             'index',
             'generateKey',
-            'setSlackWebHookUrl',
+            'setWebHooks',
             'updateAccount',
+            'updateAccountPassword',
             'updateDarkTheme',
         ]);
     }
@@ -48,9 +48,14 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function setSlackWebHookUrl(Request $request)
+    public function setWebHooks(Request $request)
     {
-        $user = User::find(Auth::user()->id);
+        $validator = Validator::make($request->all(), [
+            'slack_webhook_url' => 'nullable|url',
+            'discord_webhook_url' => 'nullable|url',
+        ])->validate();
+
+        $user = User::find(Auth::id());
 
         $user->slack_webhook_url = $request->input('slack_webhook_url');
         $user->discord_webhook_url = $request->input('discord_webhook_url');
@@ -95,11 +100,9 @@ class SettingsController extends Controller
 
     public function updateAccount(Request $request)
     {
-        $id = Auth::id();
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:255|string',
-            'email' => 'required|max:255|email|unique:users,email,'.$id,
+            'email' => 'required|max:255|email|unique:users,email,'.Auth::id(),
         ])->validate();
 
         $user = User::find(Auth::id());

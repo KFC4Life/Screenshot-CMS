@@ -6,7 +6,7 @@
         <div class="text-center">
             <h1>Screenshots</h1>
             <p>Here you can take a look at your taken screenshots.<br />
-                @if(Auth::user()->hasRole('admin')) Which screenshots do you want to see? @endif
+                @if(Auth::user()->isAdmin()) Which screenshots do you want to see? @endif
             </p>
             @if(Auth::user()->hasRole('admin'))
             <div class="btn-group">
