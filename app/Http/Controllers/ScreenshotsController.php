@@ -250,9 +250,9 @@ class ScreenshotsController extends Controller
         }
     }
 
-    public function get(Request $request)
+    public function get(Request $request, $name)
     {
-        if($screenshot = Screenshot::where('name', '=', $request->name)->exists()) {
+        if($screenshot = Screenshot::where('name', '=', $name)->exists()) {
             return view('screenshot', compact('screenshot'));
         } else {
             return view('errors.screenshot_not_found');
