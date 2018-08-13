@@ -25,38 +25,18 @@
     </div>
     @endguest
     @if(Auth::check())
-        <a href="#crawler-info">
+        <a href="#info">
             <img src="{{ url('/storage/screenshots/'.$screenshot->full_name) }}" />
         </a>
-        <div id="crawler-info" class="overlay">
+        <div id="info" class="overlay">
             <a class="cancel" href="#"></a>
             <div class="modal">
-                <h2>Crawler Information</h2>
+                <h2>Screenshot Information</h2>
                 <div class="content">
 
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Platform</th>
-                                <th>Status</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Slack</td>
-                                <td><i class="fa fa-check"></i></td>
-                            </tr>
-                            <tr>
-                                <td>Discord</td>
-                                <td><i class="fa fa-times"></i></td>
-                            </tr>
-                            <tr>
-                                <td>Skype</td>
-                                <td><i class="fa fa-check"></i></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <ul>
+                        <li>Uploaded: <b>{{ \Carbon\Carbon::createFromTimeString($screenshot->created_at)->diffForHumans() }}</b></li>
+                    </ul>
 
                     <br />
 
