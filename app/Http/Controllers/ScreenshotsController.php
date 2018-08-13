@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use App\Models\Screenshot;
@@ -38,6 +39,7 @@ class ScreenshotsController extends Controller
             'destroy',
             'destroyPermanently',
             'restore',
+            'emptyTrash',
         ]);
     }
 
@@ -97,6 +99,8 @@ class ScreenshotsController extends Controller
 
         $sc->delete();
 
+        Session::flash('success', 'Screenshot succesfully deleted.');
+
         return redirect()->back();
     }
 
@@ -126,6 +130,8 @@ class ScreenshotsController extends Controller
 
         $sc->forceDelete();
 
+        Session::flash('success', 'Screenshot succesfully force deleted.');
+
         return redirect()->route('screenshots.trash');
     }
 
@@ -148,6 +154,8 @@ class ScreenshotsController extends Controller
         ]);
 
         $sc->restore();
+
+        Session::flash('success', 'Screenshot succesfully restored.');
 
         return back();
     }
@@ -292,5 +300,16 @@ class ScreenshotsController extends Controller
 
                 return $response;
             }
+    }
+
+    public function emptyTrash()
+    {
+        $user = auth()->user();
+
+        $screenshots = auth()->user()->screenshots()->onlyTrashed()->forceDelete();
+
+        Session::flash('success', 'Trash succesfully emptied.');
+
+        return back();
     }
 }

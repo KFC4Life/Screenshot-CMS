@@ -33,6 +33,7 @@ Route::as('screenshots.')->prefix('screenshots')->group(function () {
     Route::get('/', 'ScreenshotsController@indexMine')->name('mine');
     Route::get('/all', 'ScreenshotsController@indexAll')->name('all');
     Route::get('/trash', 'ScreenshotsController@indexTrash')->name('trash');
+    Route::get('/trash/empty', 'ScreenshotsController@emptyTrash')->name('trash.empty');
     Route::get('/upload', 'ScreenshotsController@viewUpload')->name('upload');
     Route::post('/upload', 'ScreenshotsController@upload')->name('upload');
     Route::delete('/{screenshot}/delete', 'ScreenshotsController@destroy')->name('destroy');

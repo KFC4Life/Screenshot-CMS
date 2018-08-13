@@ -4,17 +4,33 @@
     <div class="container">
 
         <div class="text-center">
+
+            @if(Session::get('success'))
+
+                <div class="alert alert-success">
+                    {{ Session::get('success') }}
+                </div>
+
+            @endif
+
             <h1>Screenshots</h1>
             <p>Here you can take a look at your taken screenshots.<br />
                 @if(Auth::user()->isAdmin()) Which screenshots do you want to see? @endif
             </p>
             @if(Auth::user()->hasRole('admin'))
-            <div class="btn-group">
-                <a href="{{ route('screenshots.mine') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.mine') active @endif">Only mine</a>
-                <a href="{{ route('screenshots.all') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.all') active @endif">All</a>
-                <a href="{{ route('screenshots.trash') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.trash') active @endif">Trash</a>
-            </div>
+                <div class="btn-group">
+                    <a href="{{ route('screenshots.mine') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.mine') active @endif">Only mine</a>
+                    <a href="{{ route('screenshots.all') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.all') active @endif">All</a>
+                    <a href="{{ route('screenshots.trash') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.trash') active @endif">Trash Bin</a>
+                </div>
             @endif
+
+            @if(Route::currentRouteName() == 'screenshots.trash')
+
+                <a href="{{ route('screenshots.trash.empty') }}" class="btn btn-primary">Empty Trash Bin</a>
+
+            @endif
+
             <hr />
         </div>
 

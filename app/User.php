@@ -61,4 +61,9 @@ class User extends Authenticatable
             return false;
         }
     }
+
+    public function screenshots()
+    {
+        return $this->hasMany('App\Models\Screenshot');
+    }
 }
