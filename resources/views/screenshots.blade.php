@@ -13,23 +13,42 @@
 
             @endif
 
-            <h1>Screenshots</h1>
-            <p>Here you can take a look at your taken screenshots.<br />
-                @if(Auth::user()->isAdmin()) Which screenshots do you want to see? @endif
-            </p>
-            @if(Auth::user()->hasRole('admin'))
-                <div class="btn-group">
-                    <a href="{{ route('screenshots.mine') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.mine') active @endif">Only mine</a>
-                    <a href="{{ route('screenshots.all') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.all') active @endif">All</a>
-                    <a href="{{ route('screenshots.trash') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.trash') active @endif">Trash Bin</a>
-                </div>
-            @endif
+            <div class="@if(auth()->user()->dark_theme_status) bg-dark text-white @else bg-white text-dark @endif p-4 rounded">
+                <h1>Screenshots</h1>
+                <p>Here you can take a look at your taken screenshots.<br />
+                    @if(Auth::user()->isAdmin()) Which screenshots do you want to see? @endif
+                </p>
+                @if(Auth::user()->hasRole('admin'))
+                    <div class="btn-group">
+                        <a href="{{ route('screenshots.mine') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.mine') active @endif">My Screenshots</a>
+                        <a href="{{ route('screenshots.all') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.all') active @endif">All</a>
+                        <a href="{{ route('screenshots.trash') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.trash') active @endif">Trash Bin</a>
+                    </div>
+                @else
+                    <div class="btn-group">
+                        <a href="{{ route('screenshots.mine') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.mine') active @endif">My Screenshots</a>
+                        <a href="{{ route('screenshots.trash') }}" class="btn btn-secondary @if(Route::currentRouteName() == 'screenshots.trash') active @endif">Trash Bin</a>
+                    </div>
+                @endif
+                @if(Route::currentRouteName() == 'screenshots.trash')
+                    <a href="{{ route('screenshots.trash.empty') }}" class="btn btn-primary">Empty Trash Bin</a>
+                @endif
+                @if(auth()->user()->isAdmin())
+                    @if(Route::currentRouteName() == 'screenshots.trash')
+                        <form method="POST" action="{{ route('screenshots.trash.others.update') }}">
 
-            @if(Route::currentRouteName() == 'screenshots.trash')
+                            {{ csrf_field() }}
 
-                <a href="{{ route('screenshots.trash.empty') }}" class="btn btn-primary">Empty Trash Bin</a>
-
-            @endif
+                            <div class="form-check pt-3">
+                                <input class="form-check-input" type="checkbox" name="show_others_trash" onchange="this.form.submit()" @if(Session::get('show_others_trash')) checked @endif>
+                                <label class="form-check-label">
+                                    Show also trash from other users
+                                </label>
+                            </div>
+                        </form>
+                    @endif
+                @endif
+            </div>
 
             <hr />
         </div>
@@ -45,7 +64,13 @@
                     <th scope="col">Name</th>
                     <th scope="col">Created at</th>
                     @if(Route::currentRouteName() == 'screenshots.all' | Route::currentRouteName() == 'screenshots.trash')
-                        <th scope="col">User</th>
+                        @if(Route::currentRouteName() == 'screenshots.all')
+                            <th scope="col">User</th>
+                        @else
+                            @if(Session::get('show_others_trash'))
+                                <th scope="col">User</th>
+                            @endif
+                        @endif
                     @endif
                     @if(Route::currentRouteName() == 'screenshots.trash')
                         <th scope="col">Deleted at</th>
@@ -60,7 +85,13 @@
                             <td>{{ $screenshot->name }}</td>
                             <td>{{ $screenshot->created_at.' ('. \Carbon\Carbon::createFromTimeString($screenshot->created_at)->diffForHumans() .')' }}</td>
                             @if(Route::currentRouteName() == 'screenshots.all' | Route::currentRouteName() == 'screenshots.trash')
-                                <td>{{ $screenshot->user->name.' (#'. $screenshot->user->id .')' }}</td>
+                                @if(Route::currentRouteName() == 'screenshots.all')
+                                    <td>{{ $screenshot->user->name.' (#'. $screenshot->user->id .')' }}</td>
+                                @else
+                                    @if(Session::get('show_others_trash'))
+                                        <td>{{ $screenshot->user->name.' (#'. $screenshot->user->id .')' }}</td>
+                                    @endif
+                                @endif
                             @endif
                             @if(Route::currentRouteName() == 'screenshots.trash')
                                 <td>{{ $screenshot->deleted_at.' ('. \Carbon\Carbon::createFromTimeString($screenshot->deleted_at)->diffForHumans() .')' }}</td>

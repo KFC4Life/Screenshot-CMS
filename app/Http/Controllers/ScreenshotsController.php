@@ -39,6 +39,7 @@ class ScreenshotsController extends Controller
             'destroy',
             'destroyPermanently',
             'restore',
+            'indexTrash',
             'emptyTrash',
         ]);
     }
@@ -50,7 +51,7 @@ class ScreenshotsController extends Controller
      */
     public function indexMine()
     {
-        $screenshots = Screenshot::where('user_id', '=', Auth::id())->latest()->paginate(6);
+        $screenshots = Screenshot::where('user_id', '=', Auth::id())->latest()->simplePaginate(6);
         return view('screenshots', compact('screenshots'));
     }
 
@@ -61,7 +62,7 @@ class ScreenshotsController extends Controller
      */
     public function indexAll()
     {
-        $screenshots = Screenshot::latest()->paginate(6);
+        $screenshots = Screenshot::latest()->simplePaginate(6);
         return view('screenshots', compact('screenshots'));
     }
 
@@ -72,8 +73,24 @@ class ScreenshotsController extends Controller
      */
     public function indexTrash()
     {
-        $screenshots = Screenshot::onlyTrashed()->latest('deleted_at')->paginate(6);
+        if(Session::get('show_others_trash')) {
+            $screenshots = Screenshot::onlyTrashed()->latest('deleted_at')->simplePaginate(6);
+        } else {
+            $screenshots = auth()->user()->screenshots()->onlyTrashed()->latest('deleted_at')->simplePaginate(6);
+        }
+
         return view('screenshots', compact('screenshots'));
+    }
+
+    public function ShowOthersTrashSwitch(Request $request)
+    {
+        if($request->show_others_trash) {
+            Session::flash('show_others_trash', 1);
+        } else {
+            Session::flash('show_others_trash', 0);
+        }
+
+        return back();
     }
 
     /**
