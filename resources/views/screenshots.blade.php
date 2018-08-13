@@ -37,7 +37,8 @@
         {{ $screenshots->links() }}
 
         @if(count($screenshots) > 0)
-            <table class="table table-responsive table-striped {{ Auth::user()->dark_theme_status ? 'table-dark' : null }}">
+            <div class="table-responsive">
+                <table class="table table-striped {{ Auth::user()->dark_theme_status ? 'table-dark' : null }}">
                 <thead>
                 <tr>
                     <th scope="col">Image</th>
@@ -93,6 +94,7 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
         @else
             <h3 class="text-center">No screenshots found in this category.</h3>
         @endif
