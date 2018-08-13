@@ -85,9 +85,9 @@ class ScreenshotsController extends Controller
     public function ShowOthersTrashSwitch(Request $request)
     {
         if($request->show_others_trash) {
-            Session::flash('show_others_trash', 1);
+            Session::put('show_others_trash', 1);
         } else {
-            Session::flash('show_others_trash', 0);
+            Session::remove('show_others_trash');
         }
 
         return back();
