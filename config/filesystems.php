@@ -43,6 +43,11 @@ return [
 
     'disks' => [
 
+        'snapshots' => [
+            'driver' => 'local',
+            'root' => database_path('snapshots'),
+        ],
+
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),

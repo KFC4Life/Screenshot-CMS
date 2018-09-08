@@ -152,6 +152,7 @@ return [
          */
         ConsoleTVs\Charts\ChartsServiceProvider::class,
         Jaybizzle\LaravelCrawlerDetect\LaravelCrawlerDetectServiceProvider::class,
+        Spatie\DbSnapshots\DbSnapshotsServiceProvider::class,
 
         /*
          * Application Service Providers...
