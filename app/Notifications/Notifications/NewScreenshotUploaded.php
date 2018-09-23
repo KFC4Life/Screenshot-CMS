@@ -67,13 +67,16 @@ class NewScreenshotUploaded extends Notification implements ShouldQueue
      */
     public function toDiscordWebhook($notifiable)
     {
+        $filename = url('/storage/screenshots/'.$this->screenshot->full_name);
+
         return (new DiscordWebhookMessage)
             ->from('Screenshot CMS')
-            ->content('A new screenshot has been uploaded, check out the details below!')
+            ->content('A new screenshot has been uploaded.')
+            ->file('Screenshot', $filename)
             ->embed(function ($embed) {
                 $url = route('screenshot.get', $this->screenshot->name);
 
-                $embed->title('Screenshot')
+                $embed->image(url('/storage/screenshots/'.$this->screenshot->full_name))
                       ->field('Generated name', $this->screenshot->name, true)
                       ->field('URL', $url, true);
             });
